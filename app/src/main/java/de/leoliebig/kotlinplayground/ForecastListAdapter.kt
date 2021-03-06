@@ -1,6 +1,6 @@
 package de.leoliebig.kotlinplayground
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.TextView
 import de.leoliebig.kotlinplayground.domain.models.ForecastList
