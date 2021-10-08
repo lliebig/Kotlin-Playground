@@ -44,6 +44,7 @@ captures/
 .idea/libraries
 /.idea/workspace.xml
 /.idea/libraries
+.idea/deploymentTargetDropDown.xml
 
 # Keystore files
 *.jks
