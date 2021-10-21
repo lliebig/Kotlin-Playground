@@ -1,20 +1,26 @@
 package de.leoliebig.kotlinplayground.flow
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 object FlowRepository {
 
+    private const val TAG = "FlowRepository"
+
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
+    private val states = listOf("Hot", "Cold", "Normal")
+    private val mutableState = MutableStateFlow(states.random())
+    private val state = mutableState.asStateFlow()
+
 
     fun randomNumbers(amount: Int) : Flow<Int> {
+        //cold flow, starts execution if collected, single consumer
+
         val random = Random.Default
         return flow {
             for(i in 1..amount) {
@@ -23,18 +29,21 @@ object FlowRepository {
         }
     }
 
-    fun randomStates(amount: Int, delayInMillis: Long = 300) : StateFlow<String> {
-        val states = listOf("Hot", "Cold", "Normal")
-        val mutableState = MutableStateFlow(states.random())
+    fun randomStates(amountOfNewStatesToProduce: Int = 0, delayInMillis: Long = 300) : StateFlow<String> {
+        //hot flow, always active and in memory
+        //has a producer and one or multiple consumers
 
+        //send some states for demonstration purposes
         coroutineScope.launch {
-            for(i in 1..amount) {
-                mutableState.value = states.random()
+            for(i in 1..amountOfNewStatesToProduce) {
+                val state = states.random()
+                Log.d(TAG, "Updating state to $state")
                 delay(delayInMillis)
+                mutableState.value = state
             }
         }
 
-        return mutableState
+        return state
     }
 
     //TODO SharedFlow
